@@ -1,95 +1,172 @@
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <title>數位素養工作坊教案總覽--〈到底幾頭熊？〉APA及文獻工作坊</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; color: #333; display: flex; flex-direction: column; height: 100vh; }
-    h1, h3 { text-align: center; margin: 10px 0; }
-    .container { display: flex; flex: 1; }
-    .menu {
-      width: 240px; background: #2c3e50; padding: 20px; color: #fff;
-      overflow-y: auto; box-sizing: border-box;
-    }
-    .menu h2 { font-size: 1rem; margin-top: 1.5em; }
-    .menu ul { list-style: none; padding: 0; }
-    .menu li { margin: 8px 0; }
-    .menu a {
-      display: block; padding: 8px 12px; background: #3498db;
-      color: #fff; text-decoration: none; border-radius: 4px;
-      transition: background 0.2s; font-size: 0.9rem;
-    }
-    .menu a:hover { background: #2980b9; }
-    .content {
-      flex: 1; background: #fff; padding: 20px; box-sizing: border-box;
-    }
-    .content iframe { width: 100%; height: 100%; border: none; border-radius: 4px; }
-    .content p { color: #666; font-size: 1.1rem; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>角色資料展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        #menu {
+            width: 15%;
+            background-color: #f4f4f4;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        #content {
+            width: 85%;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        #menu h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        #menu a {
+            display: block;
+            padding: 10px;
+            color: #0366d6;
+            text-decoration: none;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+
+        #menu a:hover {
+            background-color: #ddd;
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        #menu-toggle {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            #menu {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 250px;
+                height: 100%;
+                transform: translateX(-100%);
+                z-index: 1000;
+            }
+
+            #menu.active {
+                transform: translateX(0);
+            }
+
+            #content {
+                width: 100%;
+            }
+
+            .hamburger {
+                display: block;
+                position: fixed;
+                top: 10px;
+                left: 10px;
+                z-index: 1100;
+            }
+
+            #menu-toggle:checked ~ #menu {
+                transform: translateX(0);
+            }
+        }
+    </style>
 </head>
 <body>
-  <img src="bears_academic_writing_digital_literacy_cartoon.jpg"
-       alt="Bears Learning Academic Writing" style="max-width:100%; height:auto; display:block; margin:20px auto;">
-  <h1>數位素養工作坊教案總覽──〈到底幾頭熊？〉APA及文獻工作坊</h1>
-  <h3>陽明交通大學教育研究所博士生 吳宜倫 413460006</h3>
-
-  <div class="container">
-    <nav class="menu">
-      <h2>工作坊教案</h2>
-      <ul>
-        <li><a href="#" onclick="loadContent('113-2_LiteracyWorkshopOverview.html');return false;">
-          〈到底幾頭熊？〉工作坊教案總覽（要載入比較久）
-        </a></li>
-        <li><a href="#" onclick="loadContent('113-2_LiteracyLessonPlan.html');return false;">
-          教案總覽
-        </a></li>
-        <li><a href="#" onclick="loadContent('113-2_LiteracyMaterials.html');return false;">
-          教案教材總覽
-        </a></li>
-      </ul>
-
-      <h2>音樂輔助記憶</h2>
-      <ul>
-        <li><a href="#" onclick="loadContent('index_music.html');return false;">
-          歌曲清單
-        </a></li>
-      </ul>
-
-      <h2>Visuals 概念圖及其他</h2>
-      <ul>
-        <li><a href="#" onclick="loadContent('Swales_CARS_AWL_horizontal.html');return false;">
-          CARS Model (Horizontal)
-        </a></li>
-        <li><a href="#" onclick="loadContent('Swales_CARS_AWL_vertical.html');return false;">
-          CARS Model (Vertical)
-        </a></li>
-        <li><a href="#" onclick="loadContent('Swales_CARS_markmap_horizontal.html');return false;">
-          CARS + Tense (Horizontal)
-        </a></li>
-        <li><a href="#" onclick="loadContent('Swales_CARS_markmap_vertical.html');return false;">
-          CARS + Tense (Vertical)
-        </a></li>
-      </ul>
-
-      <h2>遊戲化學習</h2>
-      <ul>
-        <li><a href="https://remarkablepolarbears.github.io/apa7_2048/#games-2048"
-               target="_blank" rel="noopener">
-          Games Menu – Bear Families
-        </a></li>
-      </ul>
+    <input type="checkbox" id="menu-toggle" aria-label="Toggle menu">
+    <label for="menu-toggle" class="hamburger">&#9776;</label>
+    <nav id="menu" aria-labelledby="menu-heading">
+        <h3 id="menu-heading">選單</h3>
+        <a href="javascript:void(0)" onclick="loadContent('character_markmap.html')">Character Markmap 建立角色流程概念圖</a>
+        <a href="javascript:void(0)" onclick="loadContent('Character_Miller_obsidian.html')">舉例 Character Sarah Miller</a>
+        <a href="javascript:void(0)" onclick="loadContent('Character_Williams.html')">舉例 Character Dr. Emma Williams</a>
+        <a href="javascript:void(0)" onclick="loadContent('Character_JackChen.html')">舉例 Character Jack Chen</a>
     </nav>
+    <div id="content">
+        <h2>歡迎選擇角色資料</h2>
+        <p>請從左側選單中選擇角色以查看其詳細資料。</p>
+    </div>
 
-    <section class="content">
-      <p>請從左側選單選擇內容，或點擊外部連結將在新分頁開啟。</p>
-    </section>
-  </div>
-
-  <script>
-    function loadContent(url) {
-      document.querySelector('.content').innerHTML =
-        '<iframe src="' + url + '" title="Content"></iframe>';
-    }
-  </script>
+    <script>
+        function loadContent(filename) {
+            fetch(filename)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    document.getElementById('content').innerHTML = data;
+                    // Close menu on mobile after clicking a link
+                    document.getElementById('menu-toggle').checked = false;
+                })
+                .catch(error => {
+                    console.error('Error loading content:', error);
+                    document.getElementById('content').innerHTML = '<p>載入錯誤，請稍後再試。</p>';
+                });
+        }
+    </script>
 </body>
 </html>
