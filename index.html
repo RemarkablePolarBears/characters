@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>數位素養工作坊教案總覽--〈到底幾頭熊？〉APA及文獻工作坊</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; color: #333; display: flex; flex-direction: column; height: 100vh; }
+    h1, h3 { text-align: center; margin: 10px 0; }
+    .container { display: flex; flex: 1; }
+    .menu {
+      width: 240px; background: #2c3e50; padding: 20px; color: #fff;
+      overflow-y: auto; box-sizing: border-box;
+    }
+    .menu h2 { font-size: 1rem; margin-top: 1.5em; }
+    .menu ul { list-style: none; padding: 0; }
+    .menu li { margin: 8px 0; }
+    .menu a {
+      display: block; padding: 8px 12px; background: #3498db;
+      color: #fff; text-decoration: none; border-radius: 4px;
+      transition: background 0.2s; font-size: 0.9rem;
+    }
+    .menu a:hover { background: #2980b9; }
+    .content {
+      flex: 1; background: #fff; padding: 20px; box-sizing: border-box;
+    }
+    .content iframe { width: 100%; height: 100%; border: none; border-radius: 4px; }
+    .content p { color: #666; font-size: 1.1rem; }
+  </style>
+</head>
+<body>
+  <img src="bears_academic_writing_digital_literacy_cartoon.jpg"
+       alt="Bears Learning Academic Writing" style="max-width:100%; height:auto; display:block; margin:20px auto;">
+  <h1>數位素養工作坊教案總覽──〈到底幾頭熊？〉APA及文獻工作坊</h1>
+  <h3>陽明交通大學教育研究所博士生 吳宜倫 413460006</h3>
+
+  <div class="container">
+    <nav class="menu">
+      <h2>工作坊教案</h2>
+      <ul>
+        <li><a href="#" onclick="loadContent('113-2_LiteracyWorkshopOverview.html');return false;">
+          〈到底幾頭熊？〉工作坊教案總覽（要載入比較久）
+        </a></li>
+        <li><a href="#" onclick="loadContent('113-2_LiteracyLessonPlan.html');return false;">
+          教案總覽
+        </a></li>
+        <li><a href="#" onclick="loadContent('113-2_LiteracyMaterials.html');return false;">
+          教案教材總覽
+        </a></li>
+      </ul>
+
+      <h2>音樂輔助記憶</h2>
+      <ul>
+        <li><a href="#" onclick="loadContent('index_music.html');return false;">
+          歌曲清單
+        </a></li>
+      </ul>
+
+      <h2>Visuals 概念圖及其他</h2>
+      <ul>
+        <li><a href="#" onclick="loadContent('Swales_CARS_AWL_horizontal.html');return false;">
+          CARS Model (Horizontal)
+        </a></li>
+        <li><a href="#" onclick="loadContent('Swales_CARS_AWL_vertical.html');return false;">
+          CARS Model (Vertical)
+        </a></li>
+        <li><a href="#" onclick="loadContent('Swales_CARS_markmap_horizontal.html');return false;">
+          CARS + Tense (Horizontal)
+        </a></li>
+        <li><a href="#" onclick="loadContent('Swales_CARS_markmap_vertical.html');return false;">
+          CARS + Tense (Vertical)
+        </a></li>
+      </ul>
+
+      <h2>遊戲化學習</h2>
+      <ul>
+        <li><a href="https://remarkablepolarbears.github.io/apa7_2048/#games-2048"
+               target="_blank" rel="noopener">
+          Games Menu – Bear Families
+        </a></li>
+      </ul>
+    </nav>
+
+    <section class="content">
+      <p>請從左側選單選擇內容，或點擊外部連結將在新分頁開啟。</p>
+    </section>
+  </div>
+
+  <script>
+    function loadContent(url) {
+      document.querySelector('.content').innerHTML =
+        '<iframe src="' + url + '" title="Content"></iframe>';
+    }
+  </script>
+</body>
+</html>
